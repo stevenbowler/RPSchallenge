@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: constants.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: constants.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>// @ts-check
+
+/**
+ * Number of wins in this session, round
+ * @type {number}
+ */
+var playerWins = 0;
+
+/**
+ * Number of losses in this session, round
+ * @type {number}
+ */
+var playerLosses = 0;
+
+/**
+ * Number of ties in this session, round
+ * @type {number}
+ */
+var playerTies = 0;
+
+/**
+ * Number of opponent wins in this session, round
+ * @type {number}
+ */
+var opponentWins = 0;
+
+/**
+ * Number of opponent losses in this session, round
+ * @type {number}
+ */
+var opponentLosses = 0;
+
+/**
+ * Number of opponent ties in this session, round
+ * @type {number}
+ */
+var opponentTies = 0;
+
+/**
+ * Selector for >575px display winner, loser, tie image in top row of container
+ * @type {JQuery}
+ */
+var opponentFinalImage = $("&lt;img id=opponentFinalImage>");
+
+/**
+ * Selector for >575px display winner, loser, tie image in top row of container
+ * @type {JQuery}
+ */
+var RPSfinalImage = $("&lt;img id=RPSFinalImage>");
+
+/**
+ * Selector for >575px display winner, loser, tie image in top row of container
+ * @type {JQuery}
+ */
+var thisPlayerFinalImage = $("&lt;img id=thisPlayerFinalImage>");
+
+
+/**
+ * set to true from user input each game {@link onClickRock}, set false at game Start {@link playGame}
+ * @type {boolean}
+ */
+var playerChoseRock = false;
+
+/**
+ * set to true from user input each game {@link onClickPaper}, set false at game Start {@link playGame}
+ */
+var playerChosePaper = false;
+
+/**
+ * set to true from user input each game {@link onClickSciccors}, set false at game Start {@link playGame}
+ * @type {boolean}
+ */
+var playerChoseScissors = false;
+
+/**
+ * set to true from opponent input each game {@link opponentChoice}, set false at game Start {@link playGame}
+ * @type {boolean}
+ */
+var opponentChoseRock = false;
+
+/**
+ * one gets set to true from user input each game {@link opponentChoice}, set false at game Start {@link playGame}
+ * @type {boolean}
+ */
+var opponentChosePaper = false;
+
+/**
+ * set to true from user input each game {@link opponentChoice}, set false at game Start {@link playGame}
+ * @type {boolean}
+ */
+var opponentChoseScissors = false;
+
+/**
+ * Alias for id=gameAudio getElement to play/pause, JQuery selector no-op
+ * @constant
+ * @type {HTMLElement}
+ * @default
+ */
+const gameAudio = document.getElementById("gameAudio");
+
+/**
+ * Alias for id=gameVideo getElement, just loads video in div, doesn't play/pause
+ * @constant
+ * @type {JQuery}
+ * @default
+ */
+const gameVideo = $("#gameVideo");
+
+/**
+ * Alias for id=gameVideo getElement, just loads video in div, doesn't play/pause
+ * @constant
+ * @type {String}
+ * @default
+ */
+const gameVideoSRC = "";
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">RPS Challenge</a></h2><h3>Events</h3><ul><li><a href="global.html#event:documentReady">documentReady</a></li><li><a href="global.html#event:onClickPaper">onClickPaper</a></li><li><a href="global.html#event:onClickPlay">onClickPlay</a></li><li><a href="global.html#event:onClickRock">onClickRock</a></li><li><a href="global.html#event:onClickScissors">onClickScissors</a></li></ul><h3>Global</h3><ul><li><a href="global.html#animateCSS">animateCSS</a></li><li><a href="global.html#bounceOpponent">bounceOpponent</a></li><li><a href="global.html#bounceThisPlayer">bounceThisPlayer</a></li><li><a href="global.html#chooseWinner">chooseWinner</a></li><li><a href="global.html#gameAudio">gameAudio</a></li><li><a href="global.html#gameVideo">gameVideo</a></li><li><a href="global.html#gameVideoSRC">gameVideoSRC</a></li><li><a href="global.html#handleWin">handleWin</a></li><li><a href="global.html#loadRockPaperScissors">loadRockPaperScissors</a></li><li><a href="global.html#opponentChosePaper">opponentChosePaper</a></li><li><a href="global.html#opponentChoseRock">opponentChoseRock</a></li><li><a href="global.html#opponentChoseScissors">opponentChoseScissors</a></li><li><a href="global.html#opponentFinalImage">opponentFinalImage</a></li><li><a href="global.html#opponentLosses">opponentLosses</a></li><li><a href="global.html#opponentTies">opponentTies</a></li><li><a href="global.html#opponentWins">opponentWins</a></li><li><a href="global.html#pauseAudio">pauseAudio</a></li><li><a href="global.html#playAudio">playAudio</a></li><li><a href="global.html#playerChosePaper">playerChosePaper</a></li><li><a href="global.html#playerChoseRock">playerChoseRock</a></li><li><a href="global.html#playerChoseScissors">playerChoseScissors</a></li><li><a href="global.html#playerLosses">playerLosses</a></li><li><a href="global.html#playerTies">playerTies</a></li><li><a href="global.html#playerWins">playerWins</a></li><li><a href="global.html#playVideo">playVideo</a></li><li><a href="global.html#RPSfinalImage">RPSfinalImage</a></li><li><a href="global.html#startGame">startGame</a></li><li><a href="global.html#thisPlayerFinalImage">thisPlayerFinalImage</a></li><li><a href="global.html#top">top</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Mon Mar 09 2020 08:04:09 GMT-0500 (Central Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

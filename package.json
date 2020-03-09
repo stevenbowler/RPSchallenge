@@ -1,0 +1,28 @@
+{
+  "name": "rpschallenge",
+  "version": "1.0.0",
+  "description": "Rock Paper Scissors Challenge Game",
+  "main": "index.html",
+  "scripts": {
+    "doc": "jsdoc -c jsdoc.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stevenbowler/RPSchallenge.git"
+  },
+  "keywords": [
+    "Rock",
+    "Paper",
+    "Scissors"
+  ],
+  "author": "Steven Bowler",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/stevenbowler/RPSchallenge/issues"
+  },
+  "homepage": "https://github.com/stevenbowler/RPSchallenge#readme",
+  "dependencies": {
+    "@types/jquery": "^3.3.33",
+    "jsdoc": "^3.6.3"
+  }
+}

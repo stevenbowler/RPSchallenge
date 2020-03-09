@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: app.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: app.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>// @ts-check
+
+/** 
+ * @top
+ * @function top
+ * @todo how to {@link pauseAudio} onclick of youtube iframe embed, i.e. play one or the other.
+ * 
+ * */
+
+
+/**
+ * Wraps all JQuery
+ * @event documentReady
+*/
+$(document).ready(function () {
+
+    /**
+     * on click calls {@link startGame}
+     * @event onClickPlay
+     */
+    const onClickPlay = $("#play").on("click", function () {
+        startGame();
+    });
+
+
+    /**
+     * Called from {@link onClickPlay}. Reset game variables, reset display, set timer, call {@link chooseWinner}
+     * @function startGame
+     */
+    const startGame = () => {
+        playerChoseRock = false;
+        playerChosePaper = false;
+        playerChoseScissors = false;
+        opponentChoseRock = false;
+        opponentChosePaper = false;
+        opponentChoseScissors = false;
+        $("#opponentFinal img").remove();
+        $("#RPSfinal img").remove();
+        $("#thisPlayerFinal img").remove();
+        setTimeout(function () {
+            console.log("called timer");
+            chooseWinner()
+        }, 5000);
+        bounceThisPlayer();
+        loadRockPaperScissors();
+        bounceOpponent();
+    }
+
+
+    /**
+     * called from {@link startGame}, set display, depending on outcome call either {@link handleLoss}, or {@link handleWin}, or {@link handleTie}
+     * @function chooseWinner
+     */
+    const chooseWinner = () => {
+        console.log("chooseWinner");
+
+        var opponentChoice = Math.random();
+        if (opponentChoice &lt;= 0.333) opponentChoseRock = true;
+        else if (opponentChoice &lt;= .667) opponentChosePaper = true;
+        else opponentChoseScissors = true;
+
+        if (opponentChoseRock) $("#opponentImage").attr("src", "./assets/img/rock-you.png");
+        if (opponentChosePaper) $("#opponentImage").attr("src", "./assets/img/paper-you.png");
+        if (opponentChoseScissors) $("#opponentImage").attr("src", "./assets/img/scissors-you.png");
+
+        if (playerChoseRock) $("#thisPlayerImage").attr("src", "./assets/img/rock-cpu.png");
+        if (playerChosePaper) $("#thisPlayerImage").attr("src", "./assets/img/paper-cpu.png");
+        if (playerChoseScissors) $("#thisPlayerImage").attr("src", "./assets/img/scissors-cpu.png");
+
+        if ((playerChoseRock &amp;&amp; opponentChoseScissors) ||
+            (playerChosePaper &amp;&amp; opponentChoseRock) ||
+            (playerChoseScissors &amp;&amp; opponentChosePaper)) handleWin();
+
+        if ((playerChoseRock &amp;&amp; opponentChosePaper) ||
+            (playerChosePaper &amp;&amp; opponentChoseScissors) ||
+            (playerChoseScissors &amp;&amp; opponentChoseRock)) handleLoss();
+
+        if ((playerChoseRock &amp;&amp; opponentChoseRock) ||
+            (playerChosePaper &amp;&amp; opponentChosePaper) ||
+            (playerChoseScissors &amp;&amp; opponentChoseScissors)) handleTie();
+    }
+
+    /**
+     * called from {@link chooseWinner}, update display with end of game status
+     * @function handleWin
+     */
+    const handleWin = () => {
+        console.log("handleWin");
+        ++playerWins;
+        ++opponentLosses;
+        thisPlayerFinalImage.attr({ src: "./assets/img/winner.jfif" });
+        $("#thisPlayerFinal").append(thisPlayerFinalImage);
+        // animateCSS("#opponentFinalImage", "zoomOutLeft", function () {
+        //     $("#opponentFinalImage").empty();
+        //     $("#opponentFinalImage").attr({ display: "none" });
+        // });
+        $("#RPSimageScore").html("Game Status: &lt;strong>You Won Blue&lt;/strong>");
+        $("#thisPlayerScore").text("You Blue Wins: " + playerWins + " Ties: " + playerTies + " Losses: " + playerLosses);
+        $("#opponentScore").text("Opponent Green Wins: " + opponentWins + " Ties: " + opponentTies + " Losses: " + opponentLosses);
+    }
+
+
+
+    /**
+     * called from {@link chooseWinner}, update display with end of game status
+     * @function handleWin
+     */
+    const handleLoss = () => {
+        console.log("handleLoss");
+        ++playerLosses;
+        ++opponentWins;
+        thisPlayerFinalImage.attr({ src: "./assets/img/loser.jfif" });
+        $("#thisPlayerFinal").append(thisPlayerFinalImage);
+        $("#RPSimageScore").html("Game Status: &lt;strong>You Lost Blue&lt;/strong>");
+        $("#thisPlayerScore").text("You Blue Wins: " + playerWins + " Ties: " + playerTies + " Losses: " + playerLosses);
+        $("#opponentScore").text("Opponent Green Wins: " + opponentWins + " Ties: " + opponentTies + " Losses: " + opponentLosses);
+    }
+
+
+
+    /**
+     * called from {@link chooseWinner}, update display with end of game status
+     * @function handleWin
+     */
+    const handleTie = () => {
+        console.log("handleTie");
+        ++playerTies;
+        ++opponentTies;
+        RPSfinalImage.attr({ src: "./assets/img/tieGame.jfif" });
+        $("#RPSFinal").append(RPSfinalImage);
+        $("#RPSimageScore").html("Game Status: &lt;strong>Tie&lt;/strong>");
+        $("#thisPlayerScore").text("You Blue Wins: " + playerWins + " Ties: " + playerTies + " Losses: " + playerLosses);
+        $("#opponentScore").text("Opponent Green Wins: " + opponentWins + " Ties: " + opponentTies + " Losses: " + opponentLosses);
+    }
+
+
+
+    /**
+     *  set boolean {@link playerChoseRock} true
+     * @event onClickRock
+     */
+    const onClickRock = $("#rock").on("click", () => {
+        playerChoseRock = true;
+        console.log("Rock Chosen");
+    });
+
+
+
+    /**
+     * set boolean {@link playerChosePaper} true
+     * @event onClickPaper 
+     */
+    const onClickPaper = $("#paper").on("click", () => {
+        playerChosePaper = true;
+        console.log("Paper Chosen");
+
+    });
+
+
+
+    /**
+     *  set boolean {@link playerChoseScissors} true
+     * @event onClickScissors
+     */
+    const onClickScissors = $("#scissors").on("click", () => {
+        playerChoseScissors = true;
+        console.log("Scissors Chosen");
+
+    });
+
+
+    /**
+     * Called at start of each RPS game
+     * @function bounceThisPlayer
+     */
+    const bounceThisPlayer = () => {
+        $("#thisPlayerImage").attr("src", "./assets/img/rock-cpu.png");
+        animateCSS("#thisPlayerImage", "tada", function () {
+            animateCSS("#thisPlayerImage", "bounce", function () {
+                animateCSS("#thisPlayerImage", "tada", function () {
+                    animateCSS("#thisPlayerImage", "bounce");
+                });
+            });
+        });
+    }
+
+
+    /**
+     * Called at start of each RPS game
+     * @function bounceOpponent
+     */
+    const bounceOpponent = () => {
+        $("#opponentImage").attr("src", "./assets/img/rock-you.png");
+        animateCSS("#opponentImage", "bounce", function () {
+            animateCSS("#opponentImage", "tada", function () {
+                animateCSS("#opponentImage", "bounce", function () {
+                    animateCSS("#opponentImage", "tada");
+                });
+            });
+        });
+    }
+
+
+    /**
+     * Called at start of each RPS game
+     * @function loadRockPaperScissors
+     */
+    const loadRockPaperScissors = () => {
+        $("#RPSimage").attr({ src: "./assets/img/rpsRockStarter.jpg" });
+        animateCSS("#RPSimage", "zoomInLeft", function () {
+            $("#RPSimage").attr("src", "./assets/img/rpsPaperStarter.jpg");
+            animateCSS("#RPSimage", "zoomInRight", function () {
+                $("#RPSimage").attr("src", "./assets/img/rpsScissorsStarter.jpg");
+                animateCSS("#RPSimage", "zoomInLeft", function () {
+                    $("#RPSimage").attr("src", "./assets/img/rpsShootStarter.jpg");
+                    animateCSS("#RPSimage", "zoomInRight");
+                });
+            });
+        });
+    }
+
+    /**
+     * on load window call here
+     */
+    bounceThisPlayer();
+    loadRockPaperScissors();
+    bounceOpponent();
+
+    /**@bottom Calling the function to display the intial buttons
+     */
+
+});</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">RPS Challenge</a></h2><h3>Events</h3><ul><li><a href="global.html#event:documentReady">documentReady</a></li><li><a href="global.html#event:onClickPaper">onClickPaper</a></li><li><a href="global.html#event:onClickPlay">onClickPlay</a></li><li><a href="global.html#event:onClickRock">onClickRock</a></li><li><a href="global.html#event:onClickScissors">onClickScissors</a></li></ul><h3>Global</h3><ul><li><a href="global.html#animateCSS">animateCSS</a></li><li><a href="global.html#bounceOpponent">bounceOpponent</a></li><li><a href="global.html#bounceThisPlayer">bounceThisPlayer</a></li><li><a href="global.html#chooseWinner">chooseWinner</a></li><li><a href="global.html#gameAudio">gameAudio</a></li><li><a href="global.html#gameVideo">gameVideo</a></li><li><a href="global.html#gameVideoSRC">gameVideoSRC</a></li><li><a href="global.html#handleWin">handleWin</a></li><li><a href="global.html#loadRockPaperScissors">loadRockPaperScissors</a></li><li><a href="global.html#opponentChosePaper">opponentChosePaper</a></li><li><a href="global.html#opponentChoseRock">opponentChoseRock</a></li><li><a href="global.html#opponentChoseScissors">opponentChoseScissors</a></li><li><a href="global.html#opponentFinalImage">opponentFinalImage</a></li><li><a href="global.html#opponentLosses">opponentLosses</a></li><li><a href="global.html#opponentTies">opponentTies</a></li><li><a href="global.html#opponentWins">opponentWins</a></li><li><a href="global.html#pauseAudio">pauseAudio</a></li><li><a href="global.html#playAudio">playAudio</a></li><li><a href="global.html#playerChosePaper">playerChosePaper</a></li><li><a href="global.html#playerChoseRock">playerChoseRock</a></li><li><a href="global.html#playerChoseScissors">playerChoseScissors</a></li><li><a href="global.html#playerLosses">playerLosses</a></li><li><a href="global.html#playerTies">playerTies</a></li><li><a href="global.html#playerWins">playerWins</a></li><li><a href="global.html#playVideo">playVideo</a></li><li><a href="global.html#RPSfinalImage">RPSfinalImage</a></li><li><a href="global.html#startGame">startGame</a></li><li><a href="global.html#thisPlayerFinalImage">thisPlayerFinalImage</a></li><li><a href="global.html#top">top</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Mon Mar 09 2020 08:04:09 GMT-0500 (Central Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
