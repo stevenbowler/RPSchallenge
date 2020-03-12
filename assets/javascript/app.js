@@ -313,8 +313,7 @@ $(document).ready(function () {
 
 
 
-    /**
-     * called from load after setTimer, in multi-user mode set interval timer {@link roundRobinCheck}, else solitaire mode.
+    /**called from load after setTimer, in multi-user mode set interval timer {@link roundRobinCheck}, else solitaire mode.
      * @function welcome
      */
     const welcome = () => {

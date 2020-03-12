@@ -29,6 +29,70 @@
             <pre class="prettyprint source linenums"><code>// @ts-check
 
 /**
+ * used for set and clear of interval timer
+ * @type {*}
+ */
+var timerId;
+
+/**
+ * timer value in seconds to timeout the player1 and player2 in challenge mode
+ * @constant
+ * @type {number}
+ */
+const sessionTimeout = 180;
+
+/**
+ * @type {boolean}
+ */
+var gameInProgress = false;
+
+/**
+ * @type {number}
+ */
+var challengers = 0;
+
+/**
+ * @type {boolean}
+ */
+var gameOn = false;
+
+/**
+ * false stay in solitaire mode, true if user requests to challenge then place in challenge mode in Firebase
+ * @type {boolean}
+ */
+var challenge = false;
+
+
+/**
+ * @type {string}
+ */
+var username = "";
+
+
+
+var player1Name = "notAssigned";
+var player1Id = "notAssigned";
+var player1Ready = false;
+var player1Timer = moment();
+// var player1Choice = "";
+var player1ChoseRock = false;
+var player1ChosePaper = false;
+var player1ChoseScissors = false;
+
+var player2Name = "notAssigned";
+var player2Id = "notAssigned";
+var player2Ready = false;
+var player2Timer = moment();
+// var player2Choice = "";
+var player2ChoseRock = false;
+var player2ChosePaper = false;
+var player2ChoseScissors = false;
+
+var isPlayer1 = false;
+var isPlayer2 = false;
+
+
+/**
  * Number of wins in this session, round
  * @type {number}
  */
@@ -141,6 +205,62 @@ const gameVideo = $("#gameVideo");
  * @default
  */
 const gameVideoSRC = "";
+
+
+/** 
+ * Called from {@link restart} or from play music button on home screen
+ * @function playAudio
+ */
+const playAudio = () => {
+    //@ts-ignore
+    gameAudio.play();
+}
+
+
+/** 
+ * Called from pause music button on home screen
+ * @function pauseAudio
+ */
+const pauseAudio = () => {
+    //@ts-ignore
+    gameAudio.pause();
+}
+
+
+/**
+ * Called from handleSuccess when composerName found offers youtube video in composerClues div on home screen
+ */
+const playVideo = () => {
+    gameVideo.html(gameVideoSRC);
+    animateCSS('#composerClues', 'zoomInRight');
+}
+
+
+
+
+/**
+ * Called from various points to animate unload load of content in divs,
+ *      from GitHub animate.css library
+ * @async
+ * @function animateCSS
+ * @param {*} element div id/class/tag to be modified
+ * @param {*} animationName from list of animateCSS classes
+ * @param {*} [callback] required if unloading before loading div with content, async
+ */
+const animateCSS = (element, animationName, callback) => {
+    const node = document.querySelector(element)
+    node.classList.add('animated', animationName)
+
+    function handleAnimationEnd() {
+        node.classList.remove('animated', animationName)
+        node.removeEventListener('animationend', handleAnimationEnd)
+
+        if (typeof callback === 'function') callback()
+    }
+
+    node.addEventListener('animationend', handleAnimationEnd)
+}
+
 </code></pre>
         </article>
     </section>
@@ -151,13 +271,13 @@ const gameVideoSRC = "";
 </div>
 
 <nav>
-    <h2><a href="index.html">RPS Challenge</a></h2><h3>Events</h3><ul><li><a href="global.html#event:documentReady">documentReady</a></li><li><a href="global.html#event:onClickPaper">onClickPaper</a></li><li><a href="global.html#event:onClickPlay">onClickPlay</a></li><li><a href="global.html#event:onClickRock">onClickRock</a></li><li><a href="global.html#event:onClickScissors">onClickScissors</a></li></ul><h3>Global</h3><ul><li><a href="global.html#animateCSS">animateCSS</a></li><li><a href="global.html#bounceOpponent">bounceOpponent</a></li><li><a href="global.html#bounceThisPlayer">bounceThisPlayer</a></li><li><a href="global.html#chooseWinner">chooseWinner</a></li><li><a href="global.html#gameAudio">gameAudio</a></li><li><a href="global.html#gameVideo">gameVideo</a></li><li><a href="global.html#gameVideoSRC">gameVideoSRC</a></li><li><a href="global.html#handleWin">handleWin</a></li><li><a href="global.html#loadRockPaperScissors">loadRockPaperScissors</a></li><li><a href="global.html#opponentChosePaper">opponentChosePaper</a></li><li><a href="global.html#opponentChoseRock">opponentChoseRock</a></li><li><a href="global.html#opponentChoseScissors">opponentChoseScissors</a></li><li><a href="global.html#opponentFinalImage">opponentFinalImage</a></li><li><a href="global.html#opponentLosses">opponentLosses</a></li><li><a href="global.html#opponentTies">opponentTies</a></li><li><a href="global.html#opponentWins">opponentWins</a></li><li><a href="global.html#pauseAudio">pauseAudio</a></li><li><a href="global.html#playAudio">playAudio</a></li><li><a href="global.html#playerChosePaper">playerChosePaper</a></li><li><a href="global.html#playerChoseRock">playerChoseRock</a></li><li><a href="global.html#playerChoseScissors">playerChoseScissors</a></li><li><a href="global.html#playerLosses">playerLosses</a></li><li><a href="global.html#playerTies">playerTies</a></li><li><a href="global.html#playerWins">playerWins</a></li><li><a href="global.html#playVideo">playVideo</a></li><li><a href="global.html#RPSfinalImage">RPSfinalImage</a></li><li><a href="global.html#startGame">startGame</a></li><li><a href="global.html#thisPlayerFinalImage">thisPlayerFinalImage</a></li><li><a href="global.html#top">top</a></li></ul>
+    <h2><a href="index.html">RPS Challenge</a></h2><h3>Events</h3><ul><li><a href="global.html#event:documentReady">documentReady</a></li><li><a href="global.html#event:onClickChallengeSolitaire">onClickChallengeSolitaire</a></li><li><a href="global.html#event:onClickPaper">onClickPaper</a></li><li><a href="global.html#event:onClickPlay">onClickPlay</a></li><li><a href="global.html#event:onClickRock">onClickRock</a></li><li><a href="global.html#event:onClickScissors">onClickScissors</a></li></ul><h3>Global</h3><ul><li><a href="global.html#animateCSS">animateCSS</a></li><li><a href="global.html#bounceOpponent">bounceOpponent</a></li><li><a href="global.html#bounceThisPlayer">bounceThisPlayer</a></li><li><a href="global.html#challenge">challenge</a></li><li><a href="global.html#challengers">challengers</a></li><li><a href="global.html#checkFirebaseResetGameCounters">checkFirebaseResetGameCounters</a></li><li><a href="global.html#chooseWinner">chooseWinner</a></li><li><a href="global.html#firebaseTimeOut">firebaseTimeOut</a></li><li><a href="global.html#gameAudio">gameAudio</a></li><li><a href="global.html#gameInProgress">gameInProgress</a></li><li><a href="global.html#gameOn">gameOn</a></li><li><a href="global.html#gameVideo">gameVideo</a></li><li><a href="global.html#gameVideoSRC">gameVideoSRC</a></li><li><a href="global.html#handleWin">handleWin</a></li><li><a href="global.html#loadRockPaperScissors">loadRockPaperScissors</a></li><li><a href="global.html#opponentChosePaper">opponentChosePaper</a></li><li><a href="global.html#opponentChoseRock">opponentChoseRock</a></li><li><a href="global.html#opponentChoseScissors">opponentChoseScissors</a></li><li><a href="global.html#opponentFinalImage">opponentFinalImage</a></li><li><a href="global.html#opponentLosses">opponentLosses</a></li><li><a href="global.html#opponentTies">opponentTies</a></li><li><a href="global.html#opponentWins">opponentWins</a></li><li><a href="global.html#pauseAudio">pauseAudio</a></li><li><a href="global.html#playAudio">playAudio</a></li><li><a href="global.html#playerChosePaper">playerChosePaper</a></li><li><a href="global.html#playerChoseRock">playerChoseRock</a></li><li><a href="global.html#playerChoseScissors">playerChoseScissors</a></li><li><a href="global.html#playerLosses">playerLosses</a></li><li><a href="global.html#playerTies">playerTies</a></li><li><a href="global.html#playerWins">playerWins</a></li><li><a href="global.html#playVideo">playVideo</a></li><li><a href="global.html#resetGameOnFirebase">resetGameOnFirebase</a></li><li><a href="global.html#RPSfinalImage">RPSfinalImage</a></li><li><a href="global.html#sessionTimeout">sessionTimeout</a></li><li><a href="global.html#startGame">startGame</a></li><li><a href="global.html#thisPlayerFinalImage">thisPlayerFinalImage</a></li><li><a href="global.html#timerId">timerId</a></li><li><a href="global.html#top">top</a></li><li><a href="global.html#updateFirebasePlayerChose">updateFirebasePlayerChose</a></li><li><a href="global.html#updateFireBasePlayerReady">updateFireBasePlayerReady</a></li><li><a href="global.html#updateFirebaseUsername">updateFirebaseUsername</a></li><li><a href="global.html#updateScoreBoard">updateScoreBoard</a></li><li><a href="global.html#username">username</a></li><li><a href="global.html#welcome">welcome</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Mon Mar 09 2020 08:04:09 GMT-0500 (Central Daylight Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Thu Mar 12 2020 15:42:36 GMT-0500 (Central Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>
