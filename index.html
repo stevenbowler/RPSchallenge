@@ -75,7 +75,7 @@
             <div id=opponentFinal class="col-sm animated bounce">
                 <!-- <img id=opponentFinalImage src="./assets/img/rpsRockStarter.jpg"> -->
             </div>
-            <div id=RPSFinal class="col-sm animated zoomIn">
+            <div id=RPSFinal class="col-sm animated bounce">
                 <!-- <img id=RPSFinalImage src="./assets/img/rpsPaperStarter.jpg"> -->
             </div>
             <div id=thisPlayerFinal class="col-sm animated bounce">
@@ -101,6 +101,7 @@
                 <button type="button" id="paper" class="btn-lg">Paper</button>
                 <button type="button" id="scissors" class="btn-lg">Scissors</button>
                 <button type="button" id="play" class="btn-lg bg-danger">Play</button>
+                <button type="button" id="challenge" class="btn-lg bg-danger">Go to Multi-Player Mode</button>
             </div>
         </div>
         <div id=roundRobinQueue class="row"></div>
@@ -108,6 +109,7 @@
 
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/momentjs/2.12.0/moment.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
         integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
@@ -115,10 +117,19 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
         integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
         crossorigin="anonymous"></script>
-    <!-- <script>$("#navheader").load("./assets/includes/navheader.html"); </script> -->
+
+    <!-- Firebase References -->
+    <script src="https://www.gstatic.com/firebasejs/7.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.10.0/firebase-database.js"></script>
+    <!-- 
+    <script src="https://www.gstatic.com/firebasejs/6.0.4/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/6.0.4/firebase-database.js"></script> -->
+
+    <!-- <script src="./assets/javascript/utilities.js"></script> -->
     <script src="./assets/javascript/constants.js"></script>
-    <script src="./assets/javascript/utilities.js"></script>
+    <script src="./assets/javascript/firebase.js"></script>
     <script src="./assets/javascript/app.js"></script>
+    <script></script>
 </body>
 
 </html>
