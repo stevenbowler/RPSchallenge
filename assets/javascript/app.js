@@ -23,6 +23,8 @@ $(document).ready(function () {
         else updateFirebasePlayerReady();
     });
 
+
+
     /**
      * called from {@link onClickPlay} in Solitaire mode or from {@link roundRobinCheck} when not in Solitaire mode
      * @function startGame
@@ -47,6 +49,7 @@ $(document).ready(function () {
         loadRockPaperScissors();
         bounceOpponent();
     }
+
 
 
     /**
@@ -138,6 +141,7 @@ $(document).ready(function () {
     }
 
 
+
     /**
      * called from {@link chooseWinner}, update display with end of game status
      * @function handleWin
@@ -156,6 +160,7 @@ $(document).ready(function () {
     }
 
 
+
     /**
      * called from {@link handleLoss}, {@link handleWin}, {@link handleTie}
      * @function updateScoreBoard
@@ -167,6 +172,7 @@ $(document).ready(function () {
         // if (challenge) $("#opponentScore").html("Opponent Green<p>Wins: " + opponentWins + " Ties: " + opponentTies + " Losses: " + opponentLosses + "</p><p>Opponent Name: " + `${player1Name === username ? player2Name : player1Name}` + "</p>");
         // else $("#opponentScore").html("Opponent is Green<p>Wins: " + opponentWins + " Ties: " + opponentTies + " Losses: " + opponentLosses + "</p>");
     }
+
 
 
     /**
@@ -221,6 +227,7 @@ $(document).ready(function () {
     }
 
 
+
     /**
      * Called at start of each RPS game
      * @function bounceOpponent
@@ -235,6 +242,7 @@ $(document).ready(function () {
             });
         });
     }
+
 
 
     /**
@@ -256,6 +264,7 @@ $(document).ready(function () {
     }
 
 
+
     /**
      * reset game counters at various points in game {@link onClickChallengeSolitaire}, {@link checkFirebaseRestGameCounters}
      */
@@ -266,29 +275,31 @@ $(document).ready(function () {
         opponentLosses = 0;
         opponentTies = 0;
         opponentWins = 0;
-
     }
+
+
 
     /**
      * When user clicks to toggle between Challenge mode and Solitaire mode
      * @event onClickChallengeSolitaire
      */
     const onClickChallengeSolitaire = $("#challenge").on("click", () => {
-        resetGameCounters();
         if (challenge) {    //go back to Solitaire mode
             clearInterval(timerId);
+            resetGameCounters();
             challenge = false;
             console.log("updated player 1 or 2 with " + username + " based onClick to Solitaire Mode");
             $("#challenge").text("Go to Multi-Player Mode");
             $("#RPSimageScore").html("<p>Game Mode just changed to: <strong>" + `${challenge ? "Multi-Player Challenge. " : "Solitaire. "}` + "</p><p>"
                 + `${(!challenge && (firebaseTimeOut("player1") || firebaseTimeOut("player2"))) ? " Multi-Player Spot is available" : " No Challenge available"}`
                 + "</strong></p>");
-            if (username === player1Name) firebaseDB.ref().update({ player1Name: "Logged out. Game Over.", player1Timer: 2 });
-            if (username === player2Name) firebaseDB.ref().update({ player2Name: "Logged out. Game Over.", player2Timer: 2 });
+            if (username === player1Name) firebaseDB.ref().update({ player1Name: "Logged out. Game Over.", player1Timer: 2, player1ResetCounters: true });
+            if (username === player2Name) firebaseDB.ref().update({ player2Name: "Logged out. Game Over.", player2Timer: 2, player2ResetCounters: true });
             $("#rock").css({ display: "block" });
             $("#paper").css({ display: "block" });
             $("#scissors").css({ display: "block" });
         } else if (!challenge) {
+            resetGameCounters();
             updateFirebaseUsername();   //add this username to firebase in multi-player mode
             challenge = true;
             console.log("updated player 1 or 2 with " + username + " based onClick Challenge Mode");
@@ -299,6 +310,7 @@ $(document).ready(function () {
             $("#RPSimageScore").html("<p>Game Mode just changed to: <strong>" + `${challenge ? "Multi-Player Challenge. " : "Solitaire. "}` + "</strong></p>");
         }
     });
+
 
 
     /**
@@ -342,6 +354,7 @@ $(document).ready(function () {
 
     var nowCounter = 0;
     var opponentReady = false;
+
 
     /**
      * called from {@link welcome} when in multi-player/challenge=true mode
