@@ -14,8 +14,7 @@
 */
 $(document).ready(function () {
 
-    /**
-     * on click calls {@link startGame}
+    /**on click calls {@link startGame} in solitaire, else calls {@link updateFirebasePlayerReady} in multi-player
      * @event onClickPlay
      */
     const onClickPlay = $("#play").on("click", function () {
@@ -25,8 +24,7 @@ $(document).ready(function () {
 
 
 
-    /**
-     * called from {@link onClickPlay} in Solitaire mode or from {@link roundRobinCheck} when not in Solitaire mode
+    /**called from {@link onClickPlay} in Solitaire mode or from {@link roundRobinCheck} when not in Solitaire mode
      * @function startGame
      */
     const startGame = () => {
@@ -52,8 +50,7 @@ $(document).ready(function () {
 
 
 
-    /**
-     * called from {@link startGame}, set display, depending on outcome call either {@link handleLoss}, or {@link handleWin}, or {@link handleTie}
+    /**called from {@link startGame}, set display, depending on outcome call either {@link handleLoss}, or {@link handleWin}, or {@link handleTie}
      * @function chooseWinner
      */
     const chooseWinner = () => {
@@ -104,8 +101,7 @@ $(document).ready(function () {
 
 
 
-    /**
-     * called from {@link chooseWinner}, update display with end of game status
+    /**called from {@link chooseWinner}, update display with end of game status
      * @function handleWin
      */
     const handleWin = () => {
@@ -123,10 +119,9 @@ $(document).ready(function () {
 
 
 
-    /**
-     * called from {@link chooseWinner}, update display with end of game status
- * @function handleWin
- */
+    /**called from {@link chooseWinner}, update display with end of game status
+    * @function handleLoss
+    */
     const handleLoss = () => {
         // console.log("handleLoss");
         ++playerLosses;
@@ -142,9 +137,8 @@ $(document).ready(function () {
 
 
 
-    /**
-     * called from {@link chooseWinner}, update display with end of game status
-     * @function handleWin
+    /**called from {@link chooseWinner}, update display with end of game status
+     * @function handleTie
      */
     const handleTie = () => {
         // console.log("handleTie");
@@ -161,8 +155,7 @@ $(document).ready(function () {
 
 
 
-    /**
-     * called from {@link handleLoss}, {@link handleWin}, {@link handleTie}
+    /**called from {@link handleLoss}, {@link handleWin}, {@link handleTie} at end of each game
      * @function updateScoreBoard
      */
     const updateScoreBoard = () => {
@@ -175,9 +168,9 @@ $(document).ready(function () {
 
 
 
-    /**
-     *  set boolean {@link playerChoseRock} true
+    /**set boolean {@link playerChoseRock} true
      * @event onClickRock
+     * 
      */
     const onClickRock = $("#rock").on("click", () => {
         playerChoseRock = true;
@@ -187,8 +180,7 @@ $(document).ready(function () {
 
 
 
-    /**
-     * set boolean {@link playerChosePaper} true
+    /**set boolean {@link playerChosePaper} true
      * @event onClickPaper 
      */
     const onClickPaper = $("#paper").on("click", () => {
@@ -199,8 +191,7 @@ $(document).ready(function () {
 
 
 
-    /**
-     *  set boolean {@link playerChoseScissors} true
+    /**set boolean {@link playerChoseScissors} true
      * @event onClickScissors
      */
     const onClickScissors = $("#scissors").on("click", () => {
@@ -211,8 +202,7 @@ $(document).ready(function () {
 
 
 
-    /**
-     * Called at start of each RPS game
+    /**Called at start of each RPS game from {@link startGame}
      * @function bounceThisPlayer
      */
     const bounceThisPlayer = () => {
@@ -228,8 +218,7 @@ $(document).ready(function () {
 
 
 
-    /**
-     * Called at start of each RPS game
+    /**Called at start of each RPS game from {@link startGame}
      * @function bounceOpponent
      */
     const bounceOpponent = () => {
@@ -245,8 +234,7 @@ $(document).ready(function () {
 
 
 
-    /**
-     * Called at start of each RPS game
+    /**Called at start of each RPS game from {@link startGame}
      * @function loadRockPaperScissors
      */
     const loadRockPaperScissors = () => {
@@ -265,8 +253,8 @@ $(document).ready(function () {
 
 
 
-    /**
-     * reset game counters at various points in game {@link onClickChallengeSolitaire}, {@link checkFirebaseRestGameCounters}
+    /**reset game counters at various points in game {@link onClickChallengeSolitaire}, {@link checkFirebaseRestGameCounters}
+     * @function resetGameCounters
      */
     const resetGameCounters = () => {
         playerWins = 0;                 // reset all counters due to new mode
@@ -279,8 +267,7 @@ $(document).ready(function () {
 
 
 
-    /**
-     * When user clicks to toggle between Challenge mode and Solitaire mode
+    /**when user clicks to toggle between Challenge mode and Solitaire mode, calls {@link updateFirebaseUsername}, and {@link firebaseTimeOut}
      * @event onClickChallengeSolitaire
      */
     const onClickChallengeSolitaire = $("#challenge").on("click", () => {
@@ -313,7 +300,7 @@ $(document).ready(function () {
 
 
 
-    /**called from load after setTimer, in multi-user mode set interval timer {@link roundRobinCheck}, else solitaire mode.
+    /**called from load from setTimer, in multi-user mode setInterval {@link timerId} to call {@link roundRobinCheck}, else solitaire mode.
      * @function welcome
      */
     const welcome = () => {
@@ -355,8 +342,7 @@ $(document).ready(function () {
     var opponentReady = false;
 
 
-    /**
-     * called from {@link welcome} when in multi-player/challenge=true mode
+    /**called from {@link welcome} when in multi-player/challenge=true mode, call {@link checkFirebaseRestGameCounters} if all ok call {@link startGame}
      */
     const roundRobinCheck = () => {
         // console.log("roundRobinCheck: before return ");
@@ -402,13 +388,11 @@ $(document).ready(function () {
 
 
 
-    /**
-     * on load window call here
+    /**on load window call here
      */
     bounceThisPlayer();
     loadRockPaperScissors();
     bounceOpponent();
-
     setTimeout(() => welcome(), 4000);  //wait 4 secs for load then prompt for username and challenge or solitaire
 
 
