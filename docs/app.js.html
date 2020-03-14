@@ -32,6 +32,8 @@
 /** 
  * @top
  * @function top
+ * @todo move #challenge button to #RPSimageStatus
+ * @todo occasionally lose game sync of counters, likely due to timing, first test change timerId interval to 0.5sec from 1sec
  * @todo how to {@link pauseAudio} onclick of youtube iframe embed, i.e. play one or the other.
  * 
  * */
@@ -42,8 +44,7 @@
 */
 $(document).ready(function () {
 
-    /**
-     * on click calls {@link startGame}
+    /**on click calls {@link startGame} in solitaire, else calls {@link updateFirebasePlayerReady} in multi-player
      * @event onClickPlay
      */
     const onClickPlay = $("#play").on("click", function () {
@@ -52,12 +53,23 @@ $(document).ready(function () {
     });
 
 
+    /** called from {@link startGame} to display #rock, #paper, #scissors
+     * @function displayRockPaperScissorsButtons
+     */
+    const displayRockPaperScissorsButtons = () => {
+        $("#rock").css({ display: "block" });
+        $("#paper").css({ display: "block" });
+        $("#scissors").css({ display: "block" });
+        $("#play").css({ display: "none" });
+        $("#challenge").css({ display: "none" });
 
-    /**
-     * called from {@link onClickPlay} in Solitaire mode or from {@link roundRobinCheck} when not in Solitaire mode
+    }
+
+    /**called from {@link onClickPlay} in Solitaire mode or from {@link roundRobinCheck} when not in Solitaire mode
      * @function startGame
      */
     const startGame = () => {
+        displayRockPaperScissorsButtons();
         playerChoseRock = false;
         playerChosePaper = false;
         playerChoseScissors = false;
@@ -80,8 +92,7 @@ $(document).ready(function () {
 
 
 
-    /**
-     * called from {@link startGame}, set display, depending on outcome call either {@link handleLoss}, or {@link handleWin}, or {@link handleTie}
+    /**called from {@link startGame}, set display, depending on outcome call either {@link handleLoss}, or {@link handleWin}, or {@link handleTie}
      * @function chooseWinner
      */
     const chooseWinner = () => {
@@ -132,8 +143,7 @@ $(document).ready(function () {
 
 
 
-    /**
-     * called from {@link chooseWinner}, update display with end of game status
+    /**called from {@link chooseWinner}, update display with end of game status
      * @function handleWin
      */
     const handleWin = () => {
@@ -151,10 +161,9 @@ $(document).ready(function () {
 
 
 
-    /**
-     * called from {@link chooseWinner}, update display with end of game status
- * @function handleWin
- */
+    /**called from {@link chooseWinner}, update display with end of game status
+    * @function handleLoss
+    */
     const handleLoss = () => {
         // console.log("handleLoss");
         ++playerLosses;
@@ -170,9 +179,8 @@ $(document).ready(function () {
 
 
 
-    /**
-     * called from {@link chooseWinner}, update display with end of game status
-     * @function handleWin
+    /**called from {@link chooseWinner}, update display with end of game status
+     * @function handleTie
      */
     const handleTie = () => {
         // console.log("handleTie");
@@ -189,8 +197,7 @@ $(document).ready(function () {
 
 
 
-    /**
-     * called from {@link handleLoss}, {@link handleWin}, {@link handleTie}
+    /**called from {@link handleLoss}, {@link handleWin}, {@link handleTie} at end of each game
      * @function updateScoreBoard
      */
     const updateScoreBoard = () => {
@@ -202,12 +209,24 @@ $(document).ready(function () {
     }
 
 
+    /** called from {@link playerChoseRock}, {@link playerChosePaper}, {@link playerChoseScissors}, hide #play and display #rock, #paper, #scissors buttons
+     * @function hideRockPaperScissorsButtons
+     */
+    const hideRockPaperScissorsButtons = () => {
+        $("#rock").css({ display: "none" });
+        $("#paper").css({ display: "none" });
+        $("#scissors").css({ display: "none" });
+        $("#play").css({ display: "block" });
+        $("#challenge").css({ display: "block" });
+    }
 
-    /**
-     *  set boolean {@link playerChoseRock} true
+
+    /**set boolean {@link playerChoseRock} true
      * @event onClickRock
+     * 
      */
     const onClickRock = $("#rock").on("click", () => {
+        hideRockPaperScissorsButtons();
         playerChoseRock = true;
         updateFirebasePlayerChose("rock");
         console.log("Rock Chosen");
@@ -215,11 +234,11 @@ $(document).ready(function () {
 
 
 
-    /**
-     * set boolean {@link playerChosePaper} true
+    /**set boolean {@link playerChosePaper} true
      * @event onClickPaper 
      */
     const onClickPaper = $("#paper").on("click", () => {
+        hideRockPaperScissorsButtons();
         playerChosePaper = true;
         updateFirebasePlayerChose("paper");
         console.log("Paper Chosen");
@@ -227,11 +246,11 @@ $(document).ready(function () {
 
 
 
-    /**
-     *  set boolean {@link playerChoseScissors} true
+    /**set boolean {@link playerChoseScissors} true
      * @event onClickScissors
      */
     const onClickScissors = $("#scissors").on("click", () => {
+        hideRockPaperScissorsButtons();
         playerChoseScissors = true;
         updateFirebasePlayerChose("scissors");
         console.log("Scissors Chosen");
@@ -239,8 +258,7 @@ $(document).ready(function () {
 
 
 
-    /**
-     * Called at start of each RPS game
+    /**Called at start of each RPS game from {@link startGame}
      * @function bounceThisPlayer
      */
     const bounceThisPlayer = () => {
@@ -256,8 +274,7 @@ $(document).ready(function () {
 
 
 
-    /**
-     * Called at start of each RPS game
+    /**Called at start of each RPS game from {@link startGame}
      * @function bounceOpponent
      */
     const bounceOpponent = () => {
@@ -273,8 +290,7 @@ $(document).ready(function () {
 
 
 
-    /**
-     * Called at start of each RPS game
+    /**Called at start of each RPS game from {@link startGame}
      * @function loadRockPaperScissors
      */
     const loadRockPaperScissors = () => {
@@ -293,8 +309,8 @@ $(document).ready(function () {
 
 
 
-    /**
-     * reset game counters at various points in game {@link onClickChallengeSolitaire}, {@link checkFirebaseRestGameCounters}
+    /**reset game counters at various points in game {@link onClickChallengeSolitaire}, {@link checkFirebaseRestGameCounters}
+     * @function resetGameCounters
      */
     const resetGameCounters = () => {
         playerWins = 0;                 // reset all counters due to new mode
@@ -307,8 +323,7 @@ $(document).ready(function () {
 
 
 
-    /**
-     * When user clicks to toggle between Challenge mode and Solitaire mode
+    /**when user clicks to toggle between Challenge mode and Solitaire mode, calls {@link updateFirebaseUsername}, and {@link firebaseTimeOut}
      * @event onClickChallengeSolitaire
      */
     const onClickChallengeSolitaire = $("#challenge").on("click", () => {
@@ -317,10 +332,15 @@ $(document).ready(function () {
             resetGameCounters();
             challenge = false;
             console.log("updated player 1 or 2 with " + username + " based onClick to Solitaire Mode");
-            $("#challenge").text("Go to Multi-Player Mode");
-            $("#RPSimageScore").html("&lt;p>Game Mode just changed to: &lt;strong>" + `${challenge ? "Multi-Player Challenge. " : "Solitaire. "}` + "&lt;/p>&lt;p>"
+            $("#challenge").text("Go to Multi-player Mode");
+
+            $("#RPSimageScore").html("&lt;p>Game Mode just changed to: &lt;strong>"
+                + `${challenge ? "Multi-Player Challenge. " : "Solitaire. "}` + "&lt;/p>&lt;p>"
                 + `${(!challenge &amp;&amp; (firebaseTimeOut("player1") || firebaseTimeOut("player2"))) ? " Multi-Player Spot is available" : " No Challenge available"}`
-                + "&lt;/strong>&lt;/p>");
+                + "&lt;/strong>&lt;/p>"
+                // + "&lt;button id=challenge class=bg-danger>Go to Multiplayer Mode&lt;/button>"
+            );
+            // $("#RPSimageScore").append(challengeButton);
             if (username === player1Name) firebaseDB.ref().update({ player1Name: "Logged out. Game Over.", player1Timer: 2, player1ResetCounters: true });
             if (username === player2Name) firebaseDB.ref().update({ player2Name: "Logged out. Game Over.", player2Timer: 2, player2ResetCounters: true });
             $("#rock").css({ display: "block" });
@@ -335,13 +355,18 @@ $(document).ready(function () {
                 roundRobinCheck();
             }, 1000);
             $("#challenge").text("Go to Solitaire Mode");
-            $("#RPSimageScore").html("&lt;p>Game Mode just changed to: &lt;strong>" + `${challenge ? "Multi-Player Challenge. " : "Solitaire. "}` + "&lt;/strong>&lt;/p>");
+            $("#RPSimageScore").html("&lt;p>Game Mode just changed to: &lt;strong>"
+                + `${challenge ? "Multi-Player Challenge. " : "Solitaire. "}` + "&lt;/strong>&lt;/p>"
+                // + "&lt;button id=challenge class=bg-danger>Go to Solitaire Mode&lt;/button>"
+
+            );
+            // $("#RPSimageScore").append(challengeButton);
         }
     });
 
 
 
-    /**called from load after setTimer, in multi-user mode set interval timer {@link roundRobinCheck}, else solitaire mode.
+    /**called from load from setTimer, in multi-user mode setInterval {@link timerId} to call {@link roundRobinCheck}, else solitaire mode.
      * @function welcome
      */
     const welcome = () => {
@@ -383,8 +408,7 @@ $(document).ready(function () {
     var opponentReady = false;
 
 
-    /**
-     * called from {@link welcome} when in multi-player/challenge=true mode
+    /**called from {@link welcome} when in multi-player/challenge=true mode, call {@link checkFirebaseRestGameCounters} if all ok call {@link startGame}
      */
     const roundRobinCheck = () => {
         // console.log("roundRobinCheck: before return ");
@@ -393,17 +417,6 @@ $(document).ready(function () {
 
         // check if opposing player is new and reset game counters
         checkFirebaseResetGameCounters();
-
-        // if !gameInProgress the hide rock,paper,scissors buttons
-        if (challenge &amp;&amp; !gameInProgress) {
-            $("#rock").css({ display: "none" });
-            $("#paper").css({ display: "none" });
-            $("#scissors").css({ display: "none" });
-        } else {
-            $("#rock").css({ display: "block" });
-            $("#paper").css({ display: "block" });
-            $("#scissors").css({ display: "block" });
-        }
 
         //update timer for this player to keep this player active
         ++nowCounter;
@@ -430,13 +443,12 @@ $(document).ready(function () {
 
 
 
-    /**
-     * on load window call here
+    /**on load window call here
      */
     bounceThisPlayer();
     loadRockPaperScissors();
     bounceOpponent();
-
+    hideRockPaperScissorsButtons();
     setTimeout(() => welcome(), 4000);  //wait 4 secs for load then prompt for username and challenge or solitaire
 
 
@@ -456,13 +468,13 @@ $(document).ready(function () {
 </div>
 
 <nav>
-    <h2><a href="index.html">RPS Challenge</a></h2><h3>Events</h3><ul><li><a href="global.html#event:documentReady">documentReady</a></li><li><a href="global.html#event:onClickChallengeSolitaire">onClickChallengeSolitaire</a></li><li><a href="global.html#event:onClickPaper">onClickPaper</a></li><li><a href="global.html#event:onClickPlay">onClickPlay</a></li><li><a href="global.html#event:onClickRock">onClickRock</a></li><li><a href="global.html#event:onClickScissors">onClickScissors</a></li></ul><h3>Global</h3><ul><li><a href="global.html#animateCSS">animateCSS</a></li><li><a href="global.html#bounceOpponent">bounceOpponent</a></li><li><a href="global.html#bounceThisPlayer">bounceThisPlayer</a></li><li><a href="global.html#challenge">challenge</a></li><li><a href="global.html#challengers">challengers</a></li><li><a href="global.html#checkFirebaseResetGameCounters">checkFirebaseResetGameCounters</a></li><li><a href="global.html#chooseWinner">chooseWinner</a></li><li><a href="global.html#firebaseTimeOut">firebaseTimeOut</a></li><li><a href="global.html#gameAudio">gameAudio</a></li><li><a href="global.html#gameInProgress">gameInProgress</a></li><li><a href="global.html#gameOn">gameOn</a></li><li><a href="global.html#gameVideo">gameVideo</a></li><li><a href="global.html#gameVideoSRC">gameVideoSRC</a></li><li><a href="global.html#handleWin">handleWin</a></li><li><a href="global.html#loadRockPaperScissors">loadRockPaperScissors</a></li><li><a href="global.html#opponentChosePaper">opponentChosePaper</a></li><li><a href="global.html#opponentChoseRock">opponentChoseRock</a></li><li><a href="global.html#opponentChoseScissors">opponentChoseScissors</a></li><li><a href="global.html#opponentFinalImage">opponentFinalImage</a></li><li><a href="global.html#opponentLosses">opponentLosses</a></li><li><a href="global.html#opponentTies">opponentTies</a></li><li><a href="global.html#opponentWins">opponentWins</a></li><li><a href="global.html#pauseAudio">pauseAudio</a></li><li><a href="global.html#playAudio">playAudio</a></li><li><a href="global.html#playerChosePaper">playerChosePaper</a></li><li><a href="global.html#playerChoseRock">playerChoseRock</a></li><li><a href="global.html#playerChoseScissors">playerChoseScissors</a></li><li><a href="global.html#playerLosses">playerLosses</a></li><li><a href="global.html#playerTies">playerTies</a></li><li><a href="global.html#playerWins">playerWins</a></li><li><a href="global.html#playVideo">playVideo</a></li><li><a href="global.html#resetGameOnFirebase">resetGameOnFirebase</a></li><li><a href="global.html#RPSfinalImage">RPSfinalImage</a></li><li><a href="global.html#sessionTimeout">sessionTimeout</a></li><li><a href="global.html#startGame">startGame</a></li><li><a href="global.html#thisPlayerFinalImage">thisPlayerFinalImage</a></li><li><a href="global.html#timerId">timerId</a></li><li><a href="global.html#top">top</a></li><li><a href="global.html#updateFirebasePlayerChose">updateFirebasePlayerChose</a></li><li><a href="global.html#updateFireBasePlayerReady">updateFireBasePlayerReady</a></li><li><a href="global.html#updateFirebaseUsername">updateFirebaseUsername</a></li><li><a href="global.html#updateScoreBoard">updateScoreBoard</a></li><li><a href="global.html#username">username</a></li><li><a href="global.html#welcome">welcome</a></li></ul>
+    <h2><a href="index.html">RPS Challenge</a></h2><h3>Events</h3><ul><li><a href="global.html#event:documentReady">documentReady</a></li><li><a href="global.html#event:onClickChallengeSolitaire">onClickChallengeSolitaire</a></li><li><a href="global.html#event:onClickPaper">onClickPaper</a></li><li><a href="global.html#event:onClickPlay">onClickPlay</a></li><li><a href="global.html#event:onClickRock">onClickRock</a></li><li><a href="global.html#event:onClickScissors">onClickScissors</a></li></ul><h3>Global</h3><ul><li><a href="global.html#animateCSS">animateCSS</a></li><li><a href="global.html#bounceOpponent">bounceOpponent</a></li><li><a href="global.html#bounceThisPlayer">bounceThisPlayer</a></li><li><a href="global.html#challenge">challenge</a></li><li><a href="global.html#challengers">challengers</a></li><li><a href="global.html#checkFirebaseResetGameCounters">checkFirebaseResetGameCounters</a></li><li><a href="global.html#chooseWinner">chooseWinner</a></li><li><a href="global.html#displayRockPaperScissorsButtons">displayRockPaperScissorsButtons</a></li><li><a href="global.html#firebaseTimeOut">firebaseTimeOut</a></li><li><a href="global.html#gameAudio">gameAudio</a></li><li><a href="global.html#gameInProgress">gameInProgress</a></li><li><a href="global.html#gameOn">gameOn</a></li><li><a href="global.html#gameVideo">gameVideo</a></li><li><a href="global.html#gameVideoSRC">gameVideoSRC</a></li><li><a href="global.html#handleLoss">handleLoss</a></li><li><a href="global.html#handleTie">handleTie</a></li><li><a href="global.html#handleWin">handleWin</a></li><li><a href="global.html#hideRockPaperScissorsButtons">hideRockPaperScissorsButtons</a></li><li><a href="global.html#loadRockPaperScissors">loadRockPaperScissors</a></li><li><a href="global.html#opponentChosePaper">opponentChosePaper</a></li><li><a href="global.html#opponentChoseRock">opponentChoseRock</a></li><li><a href="global.html#opponentChoseScissors">opponentChoseScissors</a></li><li><a href="global.html#opponentFinalImage">opponentFinalImage</a></li><li><a href="global.html#opponentLosses">opponentLosses</a></li><li><a href="global.html#opponentTies">opponentTies</a></li><li><a href="global.html#opponentWins">opponentWins</a></li><li><a href="global.html#pauseAudio">pauseAudio</a></li><li><a href="global.html#playAudio">playAudio</a></li><li><a href="global.html#playerChosePaper">playerChosePaper</a></li><li><a href="global.html#playerChoseRock">playerChoseRock</a></li><li><a href="global.html#playerChoseScissors">playerChoseScissors</a></li><li><a href="global.html#playerLosses">playerLosses</a></li><li><a href="global.html#playerTies">playerTies</a></li><li><a href="global.html#playerWins">playerWins</a></li><li><a href="global.html#playVideo">playVideo</a></li><li><a href="global.html#resetGameCounters">resetGameCounters</a></li><li><a href="global.html#resetGameOnFirebase">resetGameOnFirebase</a></li><li><a href="global.html#RPSfinalImage">RPSfinalImage</a></li><li><a href="global.html#sessionTimeout">sessionTimeout</a></li><li><a href="global.html#startGame">startGame</a></li><li><a href="global.html#thisPlayerFinalImage">thisPlayerFinalImage</a></li><li><a href="global.html#timerId">timerId</a></li><li><a href="global.html#top">top</a></li><li><a href="global.html#updateFirebasePlayerChose">updateFirebasePlayerChose</a></li><li><a href="global.html#updateFireBasePlayerReady">updateFireBasePlayerReady</a></li><li><a href="global.html#updateFirebaseUsername">updateFirebaseUsername</a></li><li><a href="global.html#updateScoreBoard">updateScoreBoard</a></li><li><a href="global.html#username">username</a></li><li><a href="global.html#welcome">welcome</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Thu Mar 12 2020 15:42:36 GMT-0500 (Central Daylight Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Sat Mar 14 2020 09:37:55 GMT-0500 (Central Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>

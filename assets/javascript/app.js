@@ -24,6 +24,10 @@ $(document).ready(function () {
         else updateFirebasePlayerReady();
     });
 
+
+    /** called from {@link startGame} to display #rock, #paper, #scissors
+     * @function displayRockPaperScissorsButtons
+     */
     const displayRockPaperScissorsButtons = () => {
         $("#rock").css({ display: "block" });
         $("#paper").css({ display: "block" });
@@ -176,6 +180,10 @@ $(document).ready(function () {
         // else $("#opponentScore").html("Opponent is Green<p>Wins: " + opponentWins + " Ties: " + opponentTies + " Losses: " + opponentLosses + "</p>");
     }
 
+
+    /** called from {@link playerChoseRock}, {@link playerChosePaper}, {@link playerChoseScissors}, hide #play and display #rock, #paper, #scissors buttons
+     * @function hideRockPaperScissorsButtons
+     */
     const hideRockPaperScissorsButtons = () => {
         $("#rock").css({ display: "none" });
         $("#paper").css({ display: "none" });
@@ -381,17 +389,6 @@ $(document).ready(function () {
 
         // check if opposing player is new and reset game counters
         checkFirebaseResetGameCounters();
-
-        // if !gameInProgress the hide rock,paper,scissors buttons
-        // if (challenge && !gameInProgress) {
-        //     $("#rock").css({ display: "none" });
-        //     $("#paper").css({ display: "none" });
-        //     $("#scissors").css({ display: "none" });
-        // } else {
-        //     $("#rock").css({ display: "block" });
-        //     $("#paper").css({ display: "block" });
-        //     $("#scissors").css({ display: "block" });
-        // }
 
         //update timer for this player to keep this player active
         ++nowCounter;
