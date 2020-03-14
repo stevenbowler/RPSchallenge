@@ -4,6 +4,8 @@
 /** 
  * @top
  * @function top
+ * @todo move #challenge button to #RPSimageStatus
+ * @todo occasionally lose game sync of counters, likely due to timing, first test change timerId interval to 0.5sec from 1sec
  * @todo how to {@link pauseAudio} onclick of youtube iframe embed, i.e. play one or the other.
  * 
  * */
@@ -22,12 +24,20 @@ $(document).ready(function () {
         else updateFirebasePlayerReady();
     });
 
+    const displayRockPaperScissorsButtons = () => {
+        $("#rock").css({ display: "block" });
+        $("#paper").css({ display: "block" });
+        $("#scissors").css({ display: "block" });
+        $("#play").css({ display: "none" });
+        $("#challenge").css({ display: "none" });
 
+    }
 
     /**called from {@link onClickPlay} in Solitaire mode or from {@link roundRobinCheck} when not in Solitaire mode
      * @function startGame
      */
     const startGame = () => {
+        displayRockPaperScissorsButtons();
         playerChoseRock = false;
         playerChosePaper = false;
         playerChoseScissors = false;
@@ -166,6 +176,13 @@ $(document).ready(function () {
         // else $("#opponentScore").html("Opponent is Green<p>Wins: " + opponentWins + " Ties: " + opponentTies + " Losses: " + opponentLosses + "</p>");
     }
 
+    const hideRockPaperScissorsButtons = () => {
+        $("#rock").css({ display: "none" });
+        $("#paper").css({ display: "none" });
+        $("#scissors").css({ display: "none" });
+        $("#play").css({ display: "block" });
+        $("#challenge").css({ display: "block" });
+    }
 
 
     /**set boolean {@link playerChoseRock} true
@@ -173,6 +190,7 @@ $(document).ready(function () {
      * 
      */
     const onClickRock = $("#rock").on("click", () => {
+        hideRockPaperScissorsButtons();
         playerChoseRock = true;
         updateFirebasePlayerChose("rock");
         console.log("Rock Chosen");
@@ -184,6 +202,7 @@ $(document).ready(function () {
      * @event onClickPaper 
      */
     const onClickPaper = $("#paper").on("click", () => {
+        hideRockPaperScissorsButtons();
         playerChosePaper = true;
         updateFirebasePlayerChose("paper");
         console.log("Paper Chosen");
@@ -195,6 +214,7 @@ $(document).ready(function () {
      * @event onClickScissors
      */
     const onClickScissors = $("#scissors").on("click", () => {
+        hideRockPaperScissorsButtons();
         playerChoseScissors = true;
         updateFirebasePlayerChose("scissors");
         console.log("Scissors Chosen");
@@ -276,10 +296,15 @@ $(document).ready(function () {
             resetGameCounters();
             challenge = false;
             console.log("updated player 1 or 2 with " + username + " based onClick to Solitaire Mode");
-            $("#challenge").text("Go to Multi-Player Mode");
-            $("#RPSimageScore").html("<p>Game Mode just changed to: <strong>" + `${challenge ? "Multi-Player Challenge. " : "Solitaire. "}` + "</p><p>"
+            $("#challenge").text("Go to Multi-player Mode");
+
+            $("#RPSimageScore").html("<p>Game Mode just changed to: <strong>"
+                + `${challenge ? "Multi-Player Challenge. " : "Solitaire. "}` + "</p><p>"
                 + `${(!challenge && (firebaseTimeOut("player1") || firebaseTimeOut("player2"))) ? " Multi-Player Spot is available" : " No Challenge available"}`
-                + "</strong></p>");
+                + "</strong></p>"
+                // + "<button id=challenge class=bg-danger>Go to Multiplayer Mode</button>"
+            );
+            // $("#RPSimageScore").append(challengeButton);
             if (username === player1Name) firebaseDB.ref().update({ player1Name: "Logged out. Game Over.", player1Timer: 2, player1ResetCounters: true });
             if (username === player2Name) firebaseDB.ref().update({ player2Name: "Logged out. Game Over.", player2Timer: 2, player2ResetCounters: true });
             $("#rock").css({ display: "block" });
@@ -294,7 +319,12 @@ $(document).ready(function () {
                 roundRobinCheck();
             }, 1000);
             $("#challenge").text("Go to Solitaire Mode");
-            $("#RPSimageScore").html("<p>Game Mode just changed to: <strong>" + `${challenge ? "Multi-Player Challenge. " : "Solitaire. "}` + "</strong></p>");
+            $("#RPSimageScore").html("<p>Game Mode just changed to: <strong>"
+                + `${challenge ? "Multi-Player Challenge. " : "Solitaire. "}` + "</strong></p>"
+                // + "<button id=challenge class=bg-danger>Go to Solitaire Mode</button>"
+
+            );
+            // $("#RPSimageScore").append(challengeButton);
         }
     });
 
@@ -353,15 +383,15 @@ $(document).ready(function () {
         checkFirebaseResetGameCounters();
 
         // if !gameInProgress the hide rock,paper,scissors buttons
-        if (challenge && !gameInProgress) {
-            $("#rock").css({ display: "none" });
-            $("#paper").css({ display: "none" });
-            $("#scissors").css({ display: "none" });
-        } else {
-            $("#rock").css({ display: "block" });
-            $("#paper").css({ display: "block" });
-            $("#scissors").css({ display: "block" });
-        }
+        // if (challenge && !gameInProgress) {
+        //     $("#rock").css({ display: "none" });
+        //     $("#paper").css({ display: "none" });
+        //     $("#scissors").css({ display: "none" });
+        // } else {
+        //     $("#rock").css({ display: "block" });
+        //     $("#paper").css({ display: "block" });
+        //     $("#scissors").css({ display: "block" });
+        // }
 
         //update timer for this player to keep this player active
         ++nowCounter;
@@ -393,6 +423,7 @@ $(document).ready(function () {
     bounceThisPlayer();
     loadRockPaperScissors();
     bounceOpponent();
+    hideRockPaperScissorsButtons();
     setTimeout(() => welcome(), 4000);  //wait 4 secs for load then prompt for username and challenge or solitaire
 
 
