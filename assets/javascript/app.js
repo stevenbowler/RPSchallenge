@@ -367,7 +367,7 @@ $(document).ready(function () {
             console.log("Challenge using username: ", username);
             timerId = setInterval(() => {
                 roundRobinCheck();
-            }, 1000);
+            }, 500);
         }
         // else {
         //     alert("You will be in solitaire mode, click MULTI-PLAYER button when spot becomes available");
@@ -392,7 +392,7 @@ $(document).ready(function () {
 
         //update timer for this player to keep this player active
         ++nowCounter;
-        if (nowCounter === 60) {
+        if (nowCounter === 120) {
             nowCounter = 0;
             var now = moment().unix();
             if (isPlayer1) firebaseDB.ref().update({ player1Timer: now });
